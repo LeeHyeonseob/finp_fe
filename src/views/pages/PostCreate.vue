@@ -26,25 +26,36 @@
     </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
+import axios from '@/axios'; // axios 인스턴스 임포트
+import { useRouter } from 'vue-router';
 
 const valid = ref(false);
 const post = ref({
-    title: "",
-    content: ""
+    title: '',
+    content: ''
 });
+const router = useRouter();
 
 const rules = {
     required: value => !!value || 'Required.'
 };
 
-const submitPost = () => {
-    console.log('Post submitted:', post.value);
-    // You might want to integrate an API call here
+const submitPost = async () => {
+    try {
+        const response = await axios.post('/posts', {
+            title: post.value.title,
+            content: post.value.content
+        });
+        console.log('Post submitted:', response.data);
+        router.push(`/posts/${response.data.id}`); // 게시글 상세보기 페이지로 리다이렉트
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 const resetForm = () => {
-    post.value = { title: "", content: "" };
+    post.value = { title: '', content: '' };
 };
 </script>

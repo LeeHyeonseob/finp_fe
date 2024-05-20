@@ -4,7 +4,6 @@
             <v-card-title class="headline">{{ post.title }}</v-card-title>
             <v-card-subtitle>{{ post.author }} - {{ post.date }}</v-card-subtitle>
             <v-card-text>{{ post.content }}</v-card-text>
-
         </v-card>
 
         <v-divider class="my-4"></v-divider>
@@ -39,39 +38,44 @@
     </v-container>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import { router } from '@/router';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import axios from '@/axios'; // axios 인스턴스 임포트
+import { useRoute } from 'vue-router';
 
-const post = ref({
-    title: "Example Post Title",
-    date: "2024-05-14",
-    content: "Detailed information about the topic could be described here.",
-    author: "Author Name"
-});
+const post = ref({});
+const comments = ref([]);
+const newComment = ref('');
+const route = useRoute();
 
-const comments = ref([
-    { id: 1, author: "User1", text: "Very interesting post!" },
-    { id: 2, author: "User2", text: "Thanks for the info." }
-]);
-
-const newComment = ref("");
-
-
-
-function addComment() {
-    if (newComment.value.trim()) {
-        comments.value.push({
-            id: comments.value.length + 1,
-            author: "CurrentUser",
-            text: newComment.value
-        });
-        newComment.value = "";
+const fetchPostDetails = async () => {
+    try {
+        const response = await axios.get(`/posts/${route.params.id}`);
+        post.value = response.data;
+        comments.value = response.data.comments; // assuming the API response contains comments
+    } catch (error) {
+        console.error(error);
     }
-}
+};
 
-function rewardAuthor() {
+const addComment = async () => {
+    if (newComment.value.trim()) {
+        try {
+            const response = await axios.post(`/posts/${route.params.id}/comments`, {
+                text: newComment.value
+            });
+            comments.value.push(response.data);
+            newComment.value = '';
+        } catch (error) {
+            console.error(error);
+        }
+    }
+};
+
+const rewardAuthor = async () => {
     console.log('Reward given to the author.');
     // Implement reward logic here, possibly involving API calls to handle transactions
-}
+};
+
+onMounted(fetchPostDetails);
 </script>

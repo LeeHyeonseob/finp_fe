@@ -1,42 +1,43 @@
-<template>
-    <v-container>
-        <!-- 게시글 목록, 각 게시글은 한 줄씩 차지 -->
-        <v-row>
-            <v-col cols="12" v-for="post in posts" :key="post.id">
-                <v-card @click="goToPostDetails(post.id)" class="mb-2">
-                    <v-card-title>{{ post.title }}</v-card-title>
-                    <v-card-subtitle>{{ post.author }}</v-card-subtitle>
-                    <v-card-text>
-                        {{ post.excerpt }}
-                        <span class="float-right">Rewards: {{ post.reward }} coins</span>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
-
-        <!-- 새 게시글 작성 버튼 -->
-        <v-btn fab fixed bottom right color="primary" @click="goToCreatePost">
-            <v-icon>mdi-plus</v-icon>
-        </v-btn>
-    </v-container>
-</template>
-
-<script setup>
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue';
+import axios from '@/axios'; // axios 인스턴스 임포트
 import { useRouter } from 'vue-router';
 
-const posts = [
-    { id: 1, title: 'Post 1', author: 'Author 1', excerpt: 'This is an excerpt of the post.', reward: 150 },
-    { id: 2, title: 'Post 2', author: 'Author 2', excerpt: 'This is another excerpt of a post.', reward: 100 },
-    // Additional posts...
-];
-
+const posts = ref([]);
+const page = ref(1);
+const totalPages = ref(0);
 const router = useRouter();
 
-function goToPostDetails(id) {
-    router.push({ name: 'PostDetails', params: { id } });
-}
+const fetchPosts = async () => {
+    try {
+        const response = await axios.get('/posts', {
+            params: { page: page.value - 1 } // Spring Data JPA uses 0-based page index
+        });
+        posts.value = response.data.content;
+        totalPages.value = response.data.totalPages;
+    } catch (error) {
+        console.error(error);
+    }
+};
 
-function goToCreatePost() {
-    router.push({ name: 'PostCreate' });
-}
+const goToPostDetails = (postId: number) => {
+    router.push(`/posts/${postId}`);
+};
+
+onMounted(fetchPosts);
+watch(page, fetchPosts);
 </script>
+
+<template>
+    <v-container>
+        <v-list>
+            <v-list-item v-for="post in posts" :key="post.id" @click="goToPostDetails(post.id)">
+                <v-list-item-content>
+                    <v-list-item-title>{{ post.title }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ post.createdAt }}</v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
+        <v-pagination v-model="page" :length="totalPages" @input="fetchPosts"></v-pagination>
+    </v-container>
+</template>
