@@ -3,7 +3,13 @@ import { ref, onMounted, watch } from 'vue';
 import axios from '@/axios'; // axios 인스턴스 임포트
 import { useRouter } from 'vue-router';
 
-const posts = ref([]);
+interface Post {
+    id: number;
+    title: string;
+    createdAt: string;
+}
+
+const posts = ref<Post[]>([]);
 const page = ref(1);
 const totalPages = ref(0);
 const router = useRouter();
@@ -24,6 +30,10 @@ const goToPostDetails = (postId: number) => {
     router.push(`/posts/${postId}`);
 };
 
+const goToCreatePost = () => {
+    router.push('/main/create');
+};
+
 onMounted(fetchPosts);
 watch(page, fetchPosts);
 </script>
@@ -39,5 +49,17 @@ watch(page, fetchPosts);
             </v-list-item>
         </v-list>
         <v-pagination v-model="page" :length="totalPages" @input="fetchPosts"></v-pagination>
+        <v-btn
+            color="primary"
+            @click="goToCreatePost"
+            style="position: fixed; bottom: 16px; right: 16px;"
+        >
+            Create New Post
+        </v-btn>
     </v-container>
 </template>
+
+
+
+
+

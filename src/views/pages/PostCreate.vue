@@ -16,6 +16,13 @@
                         :rules="[rules.required]"
                         required
                     ></v-textarea>
+                    <v-text-field
+                        v-model="post.reward"
+                        label="Reward"
+                        type="number"
+                        :rules="[rules.required]"
+                        required
+                    ></v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="success" :disabled="!valid" @click="submitPost">Submit</v-btn>
@@ -28,34 +35,36 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from '@/axios'; // axios 인스턴스 임포트
+import axios from '@/axios';
 import { useRouter } from 'vue-router';
 
 const valid = ref(false);
 const post = ref({
     title: '',
-    content: ''
+    content: '',
+    reward: 0,
 });
 const router = useRouter();
 
 const rules = {
-    required: value => !!value || 'Required.'
+    required: (value: any) => !!value || 'Required.',
 };
 
 const submitPost = async () => {
     try {
         const response = await axios.post('/posts', {
             title: post.value.title,
-            content: post.value.content
+            content: post.value.content,
+            reward: post.value.reward,
         });
         console.log('Post submitted:', response.data);
-        router.push(`/posts/${response.data.id}`); // 게시글 상세보기 페이지로 리다이렉트
+        router.push(`/posts/${response.data.id}`);
     } catch (error) {
         console.error(error);
     }
 };
 
 const resetForm = () => {
-    post.value = { title: '', content: '' };
+    post.value = { title: '', content: '', reward: 0 };
 };
 </script>

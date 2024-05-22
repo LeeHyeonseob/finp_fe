@@ -28,11 +28,13 @@ instance.interceptors.response.use(
         return response;
     },
     error => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
             // 로그아웃 로직 또는 로그인 페이지로 리다이렉트
+            window.location.href = '/auth/login';
         }
         return Promise.reject(error);
     }
 );
 
 export default instance;
+

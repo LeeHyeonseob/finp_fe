@@ -43,8 +43,27 @@ import { ref, onMounted } from 'vue';
 import axios from '@/axios'; // axios 인스턴스 임포트
 import { useRoute } from 'vue-router';
 
-const post = ref({});
-const comments = ref([]);
+interface Post {
+    title: string;
+    author: string;
+    date: string;
+    content: string;
+}
+
+interface Comment {
+    id: number;
+    author: string;
+    text: string;
+}
+
+const post = ref<Post>({
+    title: '',
+    author: '',
+    date: '',
+    content: ''
+});
+
+const comments = ref<Comment[]>([]);
 const newComment = ref('');
 const route = useRoute();
 
@@ -79,3 +98,4 @@ const rewardAuthor = async () => {
 
 onMounted(fetchPostDetails);
 </script>
+
