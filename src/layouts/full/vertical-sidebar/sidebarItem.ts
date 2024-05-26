@@ -1,7 +1,12 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon
+    LayoutDashboardIcon,
+    LoginIcon,
+    MoodHappyIcon,
+    TypographyIcon,
+    UserPlusIcon,
+    CurrencyLitecoinIcon // 추가된 아이콘
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -37,8 +42,12 @@ const sidebarItem: menu[] = [
         icon: CopyIcon,
         to: '/ui/coinCharge'
     },
-
-
+    {
+        title: 'CoinTransaction',
+        icon: CurrencyLitecoinIcon,
+        to: '/ui/coinTransaction'
+    },
 ];
 
 export default sidebarItem;
+

@@ -1,5 +1,6 @@
 import PostDetails from '@/views/pages/PostDetails.vue';
 import PostCreate from '@/views/pages/PostCreate.vue';
+import CoinTransaction from '@/views/pages/CoinTransaction.vue'; // 추가된 부분
 
 const MainRoutes = {
     path: '/main',
@@ -24,7 +25,11 @@ const MainRoutes = {
             path: '/ui/coinCharge',
             component: () => import('@/views/components/CoinCharge.vue')
         },
-
+        {
+            name: 'CoinTransaction',
+            path: '/ui/coinTransaction',
+            component: CoinTransaction
+        },
         {
             path: 'post/:id',
             name: 'PostDetails',
@@ -36,7 +41,6 @@ const MainRoutes = {
             name: 'PostCreate',
             component: PostCreate
         }
-
     ]
 };
 

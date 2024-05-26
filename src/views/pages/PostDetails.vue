@@ -1,101 +1,58 @@
 <template>
     <v-container>
-        <v-card>
-            <v-card-title class="headline">{{ post.title }}</v-card-title>
-            <v-card-subtitle>{{ post.author }} - {{ post.date }}</v-card-subtitle>
-            <v-card-text>{{ post.content }}</v-card-text>
-        </v-card>
-
-        <v-divider class="my-4"></v-divider>
-
-        <!-- Comments Section -->
-        <v-card class="mb-4">
-            <v-card-title>Comments</v-card-title>
-            <v-card-text>
-                <v-list dense>
-                    <v-list-item v-for="comment in comments" :key="comment.id">
-                        <v-list-item-content>
-                            <v-list-item-title>{{ comment.author }}</v-list-item-title>
-                            <v-list-item-subtitle>{{ comment.text }}</v-list-item-subtitle>
-                        </v-list-item-content>
-                        <v-list-item-action>
-                            <v-btn icon @click="rewardAuthor">
-                                <v-icon>mdi-gift</v-icon>
-                            </v-btn>
-                        </v-list-item-action>
-                    </v-list-item>
-                </v-list>
-                <v-text-field
-                    v-model="newComment"
-                    label="Write a comment..."
-                    solo
-                    append-icon="mdi-send"
-                    @click:append="addComment"
-                    clearable
-                ></v-text-field>
-            </v-card-text>
-        </v-card>
+        <v-form ref="form" v-model="valid">
+            <v-card class="mb-4">
+                <v-card-title class="headline">Create New Post</v-card-title>
+                <v-card-text>
+                    <v-text-field
+                        v-model="post.title"
+                        label="Post Title"
+                        :rules="[rules.required]"
+                        required
+                    ></v-text-field>
+                    <v-textarea
+                        v-model="post.content"
+                        label="Content"
+                        :rules="[rules.required]"
+                        required
+                    ></v-textarea>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn color="success" :disabled="!valid" @click="submitPost">Submit</v-btn>
+                    <v-btn color="error" @click="resetForm">Reset</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import axios from '@/axios'; // axios 인스턴스 임포트
-import { useRoute } from 'vue-router';
+import { ref } from 'vue';
+import axios from '@/axios';
+import { useRouter } from 'vue-router';
 
-interface Post {
-    title: string;
-    author: string;
-    date: string;
-    content: string;
-}
-
-interface Comment {
-    id: number;
-    author: string;
-    text: string;
-}
-
-const post = ref<Post>({
+const valid = ref(false);
+const post = ref({
     title: '',
-    author: '',
-    date: '',
     content: ''
 });
+const router = useRouter();
 
-const comments = ref<Comment[]>([]);
-const newComment = ref('');
-const route = useRoute();
+const rules = {
+    required: value => !!value || 'Required.'
+};
 
-const fetchPostDetails = async () => {
+const submitPost = async () => {
     try {
-        const response = await axios.get(`/posts/${route.params.id}`);
-        post.value = response.data;
-        comments.value = response.data.comments; // assuming the API response contains comments
+        const response = await axios.post('/posts', post.value);
+        console.log('Post submitted:', response.data);
+        router.push(`/main/post/${response.data.id}`);
     } catch (error) {
         console.error(error);
     }
 };
 
-const addComment = async () => {
-    if (newComment.value.trim()) {
-        try {
-            const response = await axios.post(`/posts/${route.params.id}/comments`, {
-                text: newComment.value
-            });
-            comments.value.push(response.data);
-            newComment.value = '';
-        } catch (error) {
-            console.error(error);
-        }
-    }
+const resetForm = () => {
+    post.value = { title: '', content: '' };
 };
-
-const rewardAuthor = async () => {
-    console.log('Reward given to the author.');
-    // Implement reward logic here, possibly involving API calls to handle transactions
-};
-
-onMounted(fetchPostDetails);
 </script>
-

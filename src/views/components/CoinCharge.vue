@@ -17,12 +17,6 @@
 import { ref } from 'vue';
 import axios from '@/axios'; // axios 인스턴스 임포트
 
-interface IamportResponse {
-    buyer_id: string;
-    imp_uid: string;
-    [key: string]: any;
-}
-
 // Iamport 스크립트 로드 함수
 const loadIamport = (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -48,7 +42,7 @@ const chargeCoin = async () => {
         const { IMP } = window as any;
         IMP.init('your_iamport_key'); // 본인의 Iamport 키로 변경
 
-        const response: IamportResponse = await new Promise((resolve, reject) => {
+        const response: any = await new Promise((resolve, reject) => {
             IMP.request_pay(
                 {
                     pg: 'html5_inicis',
@@ -72,7 +66,7 @@ const chargeCoin = async () => {
             );
         });
 
-        await axios.post('/coins/recharge', {
+        await axios.post('/api/coins/recharge', {
             userId: response.buyer_id,
             impUid: response.imp_uid,
             amount: selectedAmount.value
@@ -86,20 +80,6 @@ const chargeCoin = async () => {
 };
 </script>
 
-<style scoped>
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-button:hover {
-    background-color: #45a049;
-}
-</style>
 
 
 

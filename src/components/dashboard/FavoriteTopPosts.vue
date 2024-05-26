@@ -6,7 +6,9 @@
                 <v-list-item v-for="post in favoritePosts" :key="post.id">
                     <v-list-item-content>
                         <v-list-item-title>{{ post.title }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ post.views }} views</v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                            작성자: {{ post.user }} - Favorites: {{ post.favoriteCount }} - Views: {{ post.viewCount }}
+                        </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -16,22 +18,16 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import axios from '@/axios'; // axios 인스턴스 임포트
+import axios from '@/axios';
 
-interface Post {
-    id: number;
-    title: string;
-    views: number;
-}
-
-const favoritePosts = ref<Post[]>([]);
+const favoritePosts = ref([]);
 
 const fetchFavoritePosts = async () => {
     try {
-        const response = await axios.get('/posts/top-favorites');
+        const response = await axios.get('/api/posts/favorite/top10');
         favoritePosts.value = response.data;
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching favorite posts:', error);
     }
 };
 
