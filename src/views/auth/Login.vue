@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Logo from '@/layouts/full/logo/Logo.vue';
-/* Login form */
 import LoginForm from '@/components/auth/LoginForm.vue';
 </script>
+
 <template>
     <div class="authentication">
         <v-container fluid class="pa-3">
@@ -18,7 +18,7 @@ import LoginForm from '@/components/auth/LoginForm.vue';
                             <h6 class="text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3">
                                 계정이 없다면?
                                 <RouterLink to="/auth/register"
-                                    class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2">
+                                            class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2">
                                     Create an account</RouterLink>
                             </h6>
                         </v-card-item>

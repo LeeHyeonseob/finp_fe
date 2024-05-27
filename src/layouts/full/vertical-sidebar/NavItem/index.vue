@@ -1,11 +1,4 @@
-<script setup>
-import Icon from '../Icon.vue';
-
-const props = defineProps({ item: Object, level: Number });
-</script>
-
 <template>
-    <!---Single Item-->
     <v-list-item
         :to="item.to"
         rounded
@@ -18,7 +11,7 @@ const props = defineProps({ item: Object, level: Number });
         <template v-slot:prepend>
             <Icon :item="item.icon" :level="level" />
         </template>
-        <v-list-item-title>{{item.title }}</v-list-item-title>
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
         <!---If Caption-->
         <v-list-item-subtitle v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
             {{ item.subCaption }}
@@ -37,3 +30,12 @@ const props = defineProps({ item: Object, level: Number });
         </template>
     </v-list-item>
 </template>
+
+<script setup>
+import Icon from '../Icon.vue';
+const props = defineProps({
+    item: Object,
+    level: Number,
+});
+</script>
+

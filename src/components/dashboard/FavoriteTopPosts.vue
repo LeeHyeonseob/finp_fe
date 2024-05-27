@@ -4,12 +4,10 @@
         <v-card-text>
             <v-list dense>
                 <v-list-item v-for="post in favoritePosts" :key="post.id">
-                    <v-list-item-content>
-                        <v-list-item-title>{{ post.title }}</v-list-item-title>
-                        <v-list-item-subtitle>
-                            작성자: {{ post.user }} - Favorites: {{ post.favoriteCount }} - Views: {{ post.viewCount }}
-                        </v-list-item-subtitle>
-                    </v-list-item-content>
+                    <v-list-item-title>{{ post.title }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                        작성자: {{ post.username }} - Favorites: {{ post.favoritesCount }} - Views: {{ post.views }}
+                    </v-list-item-subtitle>
                 </v-list-item>
             </v-list>
         </v-card-text>
@@ -20,11 +18,24 @@
 import { ref, onMounted } from 'vue';
 import axios from '@/axios';
 
-const favoritePosts = ref([]);
+interface Post {
+    id: number;
+    title: string;
+    username: string;
+    favoritesCount: number;
+    views: number;
+}
+
+const favoritePosts = ref<Post[]>([]);
 
 const fetchFavoritePosts = async () => {
     try {
-        const response = await axios.get('/api/posts/favorite/top10');
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/posts/favorites', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         favoritePosts.value = response.data;
     } catch (error) {
         console.error('Error fetching favorite posts:', error);
@@ -33,5 +44,3 @@ const fetchFavoritePosts = async () => {
 
 onMounted(fetchFavoritePosts);
 </script>
-
-

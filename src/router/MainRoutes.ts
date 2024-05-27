@@ -1,33 +1,34 @@
 import PostDetails from '@/views/pages/PostDetails.vue';
 import PostCreate from '@/views/pages/PostCreate.vue';
-import CoinTransaction from '@/views/pages/CoinTransaction.vue'; // 추가된 부분
+import CoinTransaction from '@/views/pages/CoinTransaction.vue';
+import CoinCharge from '@/views/pages/CoinCharge.vue';
 
 const MainRoutes = {
     path: '/main',
     meta: {
         requiresAuth: true
     },
-    redirect: '/main',
+    redirect: '/main/dashboard',
     component: () => import('@/layouts/full/FullLayout.vue'),
     children: [
         {
             name: 'Dashboard',
-            path: '/',
+            path: 'dashboard',
             component: () => import('@/views/dashboard/index.vue')
         },
         {
             name: 'Board',
-            path: '/ui/board',
+            path: 'board',
             component: () => import('@/views/components/Board.vue')
         },
         {
             name: 'CoinCharge',
-            path: '/ui/coinCharge',
-            component: () => import('@/views/components/CoinCharge.vue')
+            path: 'coinCharge',
+            component: CoinCharge
         },
         {
             name: 'CoinTransaction',
-            path: '/ui/coinTransaction',
+            path: 'coinTransaction',
             component: CoinTransaction
         },
         {

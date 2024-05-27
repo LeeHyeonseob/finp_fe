@@ -16,6 +16,13 @@
                         :rules="[rules.required]"
                         required
                     ></v-textarea>
+                    <v-text-field
+                        v-model="post.reward"
+                        label="Reward"
+                        type="number"
+                        :rules="[rules.required, rules.number]"
+                        required
+                    ></v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="success" :disabled="!valid" @click="submitPost">Submit</v-btn>
@@ -34,25 +41,32 @@ import { useRouter } from 'vue-router';
 const valid = ref(false);
 const post = ref({
     title: '',
-    content: ''
+    content: '',
+    reward: 0
 });
 const router = useRouter();
 
 const rules = {
-    required: value => !!value || 'Required.'
+    required: value => !!value || 'Required.',
+    number: value => !isNaN(value) || 'Must be a number.'
 };
 
 const submitPost = async () => {
     try {
-        const response = await axios.post('/posts', post.value);
+        const token = localStorage.getItem('token');
+        const response = await axios.post('/posts', post.value, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         console.log('Post submitted:', response.data);
         router.push(`/main/post/${response.data.id}`);
     } catch (error) {
-        console.error(error);
+        console.error('Error submitting post:', error);
     }
 };
 
 const resetForm = () => {
-    post.value = { title: '', content: '' };
+    post.value = { title: '', content: '', reward: 0 };
 };
 </script>

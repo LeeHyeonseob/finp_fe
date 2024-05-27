@@ -15,9 +15,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from '@/axios'; // axios 인스턴스 임포트
+import axios from '@/axios';
 
-// Iamport 스크립트 로드 함수
 const loadIamport = (): Promise<void> => {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -40,7 +39,7 @@ const chargeCoin = async () => {
         await loadIamport();
 
         const { IMP } = window as any;
-        IMP.init('your_iamport_key'); // 본인의 Iamport 키로 변경
+        IMP.init('your_iamport_key');
 
         const response: any = await new Promise((resolve, reject) => {
             IMP.request_pay(

@@ -1,3 +1,26 @@
+<template>
+    <v-container>
+        <v-list>
+            <v-list-item v-for="post in posts" :key="post.id" @click="goToPostDetails(post.id)">
+                <v-list-item-content>
+                    <v-list-item-title>{{ post.title }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ post.createdAt }}</v-list-item-subtitle>
+                    <br>
+                    <br>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
+        <v-pagination v-model="page" :length="totalPages" @input="fetchPosts"></v-pagination>
+        <v-btn
+            color="primary"
+            @click="goToCreatePost"
+            style="position: fixed; bottom: 16px; right: 16px;"
+        >
+            Create New Post
+        </v-btn>
+    </v-container>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import axios from '@/axios'; // axios 인스턴스 임포트
@@ -19,15 +42,15 @@ const fetchPosts = async () => {
         const response = await axios.get('/posts', {
             params: { page: page.value - 1 } // Spring Data JPA uses 0-based page index
         });
-        posts.value = response.data.content;
-        totalPages.value = response.data.totalPages;
+        posts.value = response.data;
+        totalPages.value = Math.ceil(response.headers['x-total-count'] / 10); // Assuming 10 posts per page
     } catch (error) {
         console.error(error);
     }
 };
 
 const goToPostDetails = (postId: number) => {
-    router.push(`/posts/${postId}`);
+    router.push(`/main/post/${postId}`);
 };
 
 const goToCreatePost = () => {
@@ -37,29 +60,3 @@ const goToCreatePost = () => {
 onMounted(fetchPosts);
 watch(page, fetchPosts);
 </script>
-
-<template>
-    <v-container>
-        <v-list>
-            <v-list-item v-for="post in posts" :key="post.id" @click="goToPostDetails(post.id)">
-                <v-list-item-content>
-                    <v-list-item-title>{{ post.title }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ post.createdAt }}</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-list>
-        <v-pagination v-model="page" :length="totalPages" @input="fetchPosts"></v-pagination>
-        <v-btn
-            color="primary"
-            @click="goToCreatePost"
-            style="position: fixed; bottom: 16px; right: 16px;"
-        >
-            Create New Post
-        </v-btn>
-    </v-container>
-</template>
-
-
-
-
-

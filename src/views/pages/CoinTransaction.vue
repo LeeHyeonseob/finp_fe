@@ -24,7 +24,7 @@ const transactions = ref([]);
 
 const fetchTransactions = async () => {
     try {
-        const response = await axios.get('/api/coin-transactions/user/1'); // Assume user ID is 1
+        const response = await axios.get('/api/coin-transactions/user/1');
         transactions.value = response.data;
     } catch (error) {
         console.error('Error fetching transactions:', error);

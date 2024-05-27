@@ -1,41 +1,33 @@
+// store/index.ts
 import { createStore } from 'vuex';
 
-const store = createStore({
+export default createStore({
     state: {
-        user: null,
-        token: localStorage.getItem('token') || ''
+        token: localStorage.getItem('token') || '',
+        username: localStorage.getItem('username') || '', // 사용자 이름을 저장합니다.
     },
     mutations: {
-        setUser(state, user) {
-            state.user = user;
-        },
-        setToken(state, token) {
+        SET_TOKEN(state, token) {
             state.token = token;
             localStorage.setItem('token', token);
         },
-        clearAuthData(state) {
-            state.user = null;
-            state.token = '';
-            localStorage.removeItem('token');
-        }
-    },
-    actions: {
-        login({ commit }, authData) {
-            commit('setUser', authData.user);
-            commit('setToken', authData.token);
+        SET_USERNAME(state, username) {
+            state.username = username;
+            localStorage.setItem('username', username);
         },
-        logout({ commit }) {
-            commit('clearAuthData');
-        }
+        LOGOUT(state) {
+            state.token = '';
+            state.username = '';
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+        },
     },
     getters: {
-        isAuthenticated(state) {
-            return !!state.token;
+        isAuthenticated: (state) => !!state.token,
+    },
+    actions: {
+        logout({ commit }) {
+            commit('LOGOUT');
         },
-        user(state) {
-            return state.user;
-        }
-    }
+    },
 });
-
-export default store;
