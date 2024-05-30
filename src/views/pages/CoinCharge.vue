@@ -1,15 +1,20 @@
 <template>
     <v-container>
-        <v-form @submit.prevent="chargeCoin">
-            <v-radio-group v-model="selectedAmount" label="충전 금액" required>
-                <v-radio label="1000원 - 1000코인" :value="1000"></v-radio>
-                <v-radio label="5000원 - 5000코인" :value="5000"></v-radio>
-                <v-radio label="10000원 - 10000코인" :value="10000"></v-radio>
-                <v-radio label="20000원 - 20000코인" :value="20000"></v-radio>
-                <v-radio label="50000원 - 50000코인" :value="50000"></v-radio>
-            </v-radio-group>
-            <v-btn type="submit" color="primary">충전하기</v-btn>
-        </v-form>
+        <v-card>
+            <v-card-title>코인 충전</v-card-title>
+            <v-card-text>
+                <v-form @submit.prevent="chargeCoin">
+                    <v-radio-group v-model="selectedAmount" label="충전 금액을 선택하세요" required>
+                        <v-radio label="1000원 - 1000코인" :value="1000"></v-radio>
+                        <v-radio label="5000원 - 5000코인" :value="5000"></v-radio>
+                        <v-radio label="10000원 - 10000코인" :value="10000"></v-radio>
+                        <v-radio label="20000원 - 20000코인" :value="20000"></v-radio>
+                        <v-radio label="50000원 - 50000코인" :value="50000"></v-radio>
+                    </v-radio-group>
+                    <v-btn type="submit" color="primary">충전하기</v-btn>
+                </v-form>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 
@@ -39,12 +44,12 @@ const chargeCoin = async () => {
         await loadIamport();
 
         const { IMP } = window as any;
-        IMP.init('your_iamport_key');
+        IMP.init('imp00851355');  // 고객사 식별코드
 
         const response: any = await new Promise((resolve, reject) => {
             IMP.request_pay(
                 {
-                    pg: 'html5_inicis',
+                    pg: 'kakaopay',
                     pay_method: 'card',
                     merchant_uid: `merchant_${new Date().getTime()}`,
                     name: '코인 충전',
@@ -53,7 +58,11 @@ const chargeCoin = async () => {
                     buyer_name: '구매자',
                     buyer_tel: '010-1234-5678',
                     buyer_addr: '서울특별시',
-                    buyer_postcode: '123-456'
+                    buyer_postcode: '123-456',
+                    custom_data: {
+                        channel_key: 'channel-key-7c17ee8e-0241-43f1-8133-4dfe5ee7f591'
+                    },
+                    m_redirect_url: 'http://localhost:8080/api/coins/charge-complete'  // 결제 완료 후 리디렉션 URL
                 },
                 (rsp: any) => {
                     if (rsp.success) {
@@ -79,8 +88,16 @@ const chargeCoin = async () => {
 };
 </script>
 
-
-
-
-
-
+<style scoped>
+.v-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.v-card {
+    margin-top: 20px;
+    padding: 20px;
+}
+.v-btn {
+    margin-top: 20px;
+}
+</style>
