@@ -54,6 +54,7 @@
 import { ref, onMounted } from 'vue';
 import axios from '@/axios';
 import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 
 interface Comment {
     id: number;
@@ -71,6 +72,7 @@ interface Post {
 }
 
 const route = useRoute();
+const store = useStore();
 const postId = route.params.id;
 
 const post = ref<Post>({
@@ -90,7 +92,7 @@ const rules = {
 
 const fetchPostDetails = async () => {
     try {
-        const token = localStorage.getItem('token');
+        const token = store.state.token;
         console.log('Fetching post details for postId:', postId);
         const response = await axios.get(`/posts/${postId}`, {
             headers: {
@@ -106,7 +108,7 @@ const fetchPostDetails = async () => {
 
 const fetchComments = async () => {
     try {
-        const token = localStorage.getItem('token');
+        const token = store.state.token;
         console.log('Fetching comments for postId:', postId);
         const response = await axios.get(`/comments/post/${postId}`, {
             headers: {
@@ -122,8 +124,8 @@ const fetchComments = async () => {
 
 const submitComment = async () => {
     try {
-        const username = localStorage.getItem('username') || 'anonymous';
-        const token = localStorage.getItem('token');
+        const username = store.state.username || 'anonymous';
+        const token = store.state.token;
         console.log('Submitting comment with username:', username);
         console.log('Post ID:', postId);
         console.log('Token:', token);
@@ -146,7 +148,7 @@ const submitComment = async () => {
 
 const likeComment = async (commentId: number) => {
     try {
-        const token = localStorage.getItem('token');
+        const token = store.state.token;
         const userId = localStorage.getItem('userId'); // Assuming you store userId in localStorage
         const response = await axios.post(`/like-comments/${commentId}`, null, {
             headers: {
@@ -168,7 +170,7 @@ const likeComment = async (commentId: number) => {
 
 const rewardComment = async (commentId: number) => {
     try {
-        const token = localStorage.getItem('token');
+        const token = store.state.token;
         const userId = localStorage.getItem('userId'); // Assuming you store userId in localStorage
         const response = await axios.post(`/comments/${commentId}/reward`, { fromUserId: userId, amount: 10 }, {
             headers: {
@@ -188,3 +190,6 @@ onMounted(() => {
 });
 </script>
 
+<style scoped>
+/* Add your styles here */
+</style>

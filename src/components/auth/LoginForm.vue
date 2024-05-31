@@ -31,7 +31,6 @@ import { useStore } from 'vuex';
 
 const username = ref('');
 const password = ref('');
-const rememberMe = ref(true);
 const router = useRouter();
 const store = useStore();
 
@@ -42,8 +41,8 @@ const login = async () => {
             password: password.value,
         });
         if (response.data.token) {
-            localStorage.setItem('token', response.data.token);
             store.commit('SET_TOKEN', response.data.token);
+            store.commit('SET_USERNAME', username.value);  // username을 스토어에 저장
             router.push('/main/dashboard'); // 로그인 성공 시 대시보드로 리디렉션
         } else {
             alert('Login failed');

@@ -47,8 +47,8 @@ const post = ref({
 const router = useRouter();
 
 const rules = {
-    required: value => !!value || 'Required.',
-    number: value => !isNaN(value) || 'Must be a number.'
+    required: (value: string | number) => !!value || 'Required.',
+    number: (value: string | number) => !isNaN(Number(value)) || 'Must be a number.'
 };
 
 const submitPost = async () => {

@@ -11,9 +11,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers['Authorization'] = 'Bearer ' + token;
+        // 특정 경로에 대해서만 토큰을 설정하지 않도록 합니다.
+        if (!config.url?.includes('/auth/register')) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                config.headers['Authorization'] = 'Bearer ' + token;
+            }
         }
         return config;
     },
