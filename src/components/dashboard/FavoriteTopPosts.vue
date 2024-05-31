@@ -5,7 +5,7 @@
             <v-list dense>
                 <v-list-item v-for="post in favoritePosts" :key="post.id">
                     <v-list-item-title>{{ post.title }}</v-list-item-title>
-                    <v-list-item-subtitle>
+                    <v-list-item-subtitle @click="goToPost(post.id)" style="cursor: pointer;">
                         작성자: {{ post.username }} - Favorites: {{ post.favoritesCount }} - Views: {{ post.views }}
                     </v-list-item-subtitle>
                 </v-list-item>
@@ -17,6 +17,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from '@/axios';
+import { useRouter } from 'vue-router';
 
 interface Post {
     id: number;
@@ -27,6 +28,7 @@ interface Post {
 }
 
 const favoritePosts = ref<Post[]>([]);
+const router = useRouter();
 
 const fetchFavoritePosts = async () => {
     try {
@@ -40,6 +42,10 @@ const fetchFavoritePosts = async () => {
     } catch (error) {
         console.error('Error fetching favorite posts:', error);
     }
+};
+
+const goToPost = (postId: number) => {
+    router.push(`/main/post/${postId}`);
 };
 
 onMounted(fetchFavoritePosts);

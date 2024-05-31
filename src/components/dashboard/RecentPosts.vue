@@ -5,7 +5,7 @@
             <v-list dense>
                 <v-list-item v-for="post in recentPosts" :key="post.id">
                     <v-list-item-title>{{ post.title }}</v-list-item-title>
-                    <v-list-item-subtitle>
+                    <v-list-item-subtitle @click="goToPost(post.id)" style="cursor: pointer;">
                         작성자: {{ post.username }} - Views: {{ post.views }}
                     </v-list-item-subtitle>
                 </v-list-item>
@@ -17,6 +17,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from '@/axios';
+import { useRouter } from 'vue-router';
 
 interface Post {
     id: number;
@@ -26,6 +27,7 @@ interface Post {
 }
 
 const recentPosts = ref<Post[]>([]);
+const router = useRouter();
 
 const fetchRecentPosts = async () => {
     try {
@@ -41,5 +43,10 @@ const fetchRecentPosts = async () => {
     }
 };
 
+const goToPost = (postId: number) => {
+    router.push(`/main/post/${postId}`);
+};
+
 onMounted(fetchRecentPosts);
 </script>
+
