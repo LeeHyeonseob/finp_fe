@@ -31,20 +31,20 @@
             <v-col cols="12">
                 <v-list>
                     <v-list-item v-for="comment in comments" :key="comment.id">
-                        <template v-slot:default>
+                        <v-list-item-content>
                             <v-list-item-title>{{ comment.username }}</v-list-item-title>
                             <v-list-item-subtitle>{{ comment.content }}</v-list-item-subtitle>
                             <v-list-item-subtitle>Likes: {{ comment.likeCount }}</v-list-item-subtitle>
                             <v-list-item-subtitle>Created at: {{ comment.createdAt }}</v-list-item-subtitle>
-                        </template>
-                        <template v-slot:actions>
+                        </v-list-item-content>
+                        <v-list-item-action>
                             <v-btn icon @click="likeComment(comment.id)">
                                 <v-icon>mdi-thumb-up</v-icon>
                             </v-btn>
                             <v-btn icon @click="rewardComment(comment.id)">
                                 <v-icon>mdi-currency-usd</v-icon>
                             </v-btn>
-                        </template>
+                        </v-list-item-action>
                     </v-list-item>
                 </v-list>
             </v-col>
@@ -160,12 +160,13 @@ const likeComment = async (commentId: number) => {
     try {
         const token = store.state.token;
         const userId = localStorage.getItem('userId'); // Assuming you store userId in localStorage
-        const response = await axios.post(`/like-comments/${commentId}`, null, {
+        console.log(`Liking comment with id ${commentId} by user ${userId}`);
+        const response = await axios.post(`/like-comments/${commentId}`, {
+            commentId: commentId, // 요청 본문에 commentId를 추가합니다.
+            userId: userId // 요청 본문에 userId를 추가합니다.
+        }, {
             headers: {
                 'Authorization': `Bearer ${token}`
-            },
-            params: {
-                userId: userId
             }
         });
         console.log('Comment liked:', response.data);
@@ -183,7 +184,11 @@ const rewardComment = async (commentId: number) => {
     try {
         const token = store.state.token;
         const userId = localStorage.getItem('userId'); // Assuming you store userId in localStorage
-        const response = await axios.post(`/comments/${commentId}/reward`, { fromUserId: userId, amount: 10 }, {
+        const response = await axios.post(`/comments/${commentId}/reward`, {
+            commentId: commentId, // 요청 본문에 commentId를 추가합니다.
+            fromUserId: userId,
+            amount: 10
+        }, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
