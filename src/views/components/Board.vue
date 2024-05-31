@@ -4,6 +4,8 @@
             <v-list-item v-for="post in posts" :key="post.id" @click="goToPostDetails(post.id)">
                 <v-list-item-content>
                     <v-list-item-title>{{ post.title }}</v-list-item-title>
+                    <v-list-item-subtitle>작성자: {{ post.username }}</v-list-item-subtitle> <!-- 작성자 추가 -->
+                    <v-list-item-subtitle>보상: {{ post.reward }}</v-list-item-subtitle> <!-- 보상 추가 -->
                     <v-list-item-subtitle>{{ post.createdAt }}</v-list-item-subtitle>
                     <br>
                     <br>
@@ -29,6 +31,8 @@ import { useRouter } from 'vue-router';
 interface Post {
     id: number;
     title: string;
+    username: string; // 작성자 추가
+    reward: number; // 보상 추가
     createdAt: string;
 }
 
