@@ -2,6 +2,8 @@ import PostDetails from '@/views/pages/PostDetails.vue';
 import PostCreate from '@/views/pages/PostCreate.vue';
 import CoinTransaction from '@/views/pages/CoinTransaction.vue';
 import CoinCharge from '@/views/pages/CoinCharge.vue';
+import UserProfile from '@/views/pages/UserProfile.vue';
+import UserProfileUpdate from '@/views/pages/UserProfileUpdate.vue';
 
 const MainRoutes = {
     path: '/main',
@@ -30,6 +32,16 @@ const MainRoutes = {
             name: 'CoinTransaction',
             path: 'coinTransaction',
             component: CoinTransaction
+        },
+        {
+            name: 'UserProfile',
+            path: 'profile',
+            component: UserProfile
+        },
+        {
+            name: 'UserProfileUpdate',
+            path: 'profile/update',
+            component: UserProfileUpdate
         },
         {
             path: 'post/:id',

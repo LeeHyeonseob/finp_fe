@@ -21,6 +21,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from '@/axios';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const selectedAmount = ref<number | null>(null);
 
 const loadIamport = (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -31,8 +35,6 @@ const loadIamport = (): Promise<void> => {
         document.head.appendChild(script);
     });
 };
-
-const selectedAmount = ref<number | null>(null);
 
 const chargeCoin = async () => {
     try {
@@ -62,7 +64,7 @@ const chargeCoin = async () => {
                     custom_data: {
                         channel_key: 'channel-key-7c17ee8e-0241-43f1-8133-4dfe5ee7f591'
                     },
-                    m_redirect_url: 'http://localhost:8080/api/coins/charge-complete'  // 결제 완료 후 리디렉션 URL
+                    m_redirect_url: 'http://localhost:8080/api/coins/charge-complete'
                 },
                 (rsp: any) => {
                     if (rsp.success) {
@@ -74,8 +76,10 @@ const chargeCoin = async () => {
             );
         });
 
-        await axios.post('/api/coins/recharge', {
-            userId: response.buyer_id,
+        const username = store.state.username;
+
+        await axios.post('/coins/recharge', {
+            username: username,
             impUid: response.imp_uid,
             amount: selectedAmount.value
         });

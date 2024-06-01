@@ -235,22 +235,23 @@ const likeComment = async (commentId: number) => {
 const rewardComment = async (commentId: number) => {
     try {
         const token = store.state.token;
-        const username = localStorage.getItem('username');
-        console.log(`Rewarding comment with id ${commentId} by user ${username}`);
+        const fromUsername = store.state.username || localStorage.getItem('username');
 
-        if (!username) {
-            console.error('Username is null. Please ensure the user is logged in and the username is stored in localStorage.');
+        if (!fromUsername) {
+            console.error('Username is null. Please ensure the user is logged in and the usernames are available.');
             return;
         }
 
+        console.log(`Rewarding comment with id ${commentId} from user ${fromUsername}`);
+
         const response = await axios.post(`/comments/${commentId}/reward`, {
-            username: username,
-            amount: 10
+            fromUsername: fromUsername
         }, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+
         console.log('Comment rewarded:', response.data);
     } catch (error) {
         console.error('Error rewarding comment:', error);
@@ -264,5 +265,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Add your styles here */
+.v-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.v-card {
+    margin-top: 20px;
+    padding: 20px;
+}
+.v-btn {
+    margin-top: 20px;
+}
 </style>

@@ -19,12 +19,28 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from '@/axios';
+import { useStore } from 'vuex';
 
 const transactions = ref([]);
+const store = useStore();
 
 const fetchTransactions = async () => {
     try {
-        const response = await axios.get('/api/coin-transactions/user/1');
+        const username = localStorage.getItem('username') || '';
+        const token = localStorage.getItem('token') || '';
+
+        if (!username) {
+            console.error('Username is not available');
+            return;
+        }
+
+        // Fetch transactions using username
+        const response = await axios.get(`/coin-transactions/username/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
         transactions.value = response.data;
     } catch (error) {
         console.error('Error fetching transactions:', error);

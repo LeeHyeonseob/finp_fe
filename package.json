@@ -24,7 +24,7 @@
     "vue-tabler-icons": "2.9.0",
     "vue3-apexcharts": "1.4.1",
     "vue3-perfect-scrollbar": "^1.6.1",
-    "vuetify": "^3.6.8",
+    "vuetify": "^3.6.0-beta.0.0",
     "vuex": "^4.0.2",
     "yup": "^0.32.11"
   },

@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToUserProfile = () => {
+    router.push({ name: 'UserProfile' });
+};
 </script>
 
 <template>
@@ -13,7 +20,7 @@ import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
         </template>
         <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
             <v-list class="py-0" lines="one" density="compact">
-                <v-list-item value="item1" active-color="primary">
+                <v-list-item value="item1" active-color="primary" @click="goToUserProfile">
                     <template v-slot:prepend>
                         <UserIcon stroke-width="1.5" size="20" />
                     </template>
